@@ -1,0 +1,82 @@
+---
+title: "Part 2"
+author: "Carlos Barco"
+date: "5/01/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+# Part 2: Basic Inferential Data Analysis
+*Now in the second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.*
+
+##1 Loading the data
+```{r}  
+# Load the ToothGrowth data and perform some basic exploratory data analyses
+data(ToothGrowth)
+head(ToothGrowth)
+tail(ToothGrowth)
+str(ToothGrowth)
+```
+
+##2 Basic data summary
+
+*Provide a basic summary of the data.*
+```{r}
+summary(ToothGrowth)
+``` 
+
+*Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there’s other approaches worth considering)*
+```{r}
+library(ggplot2)
+t = ToothGrowth
+g <- ggplot(ToothGrowth, aes(x = dose, y = len, dose = factor(supp)))
+g <- g + geom_line(size = 1, aes(colour = supp)) + geom_point(size =10, pch = 21,  alpha = .5)
+g
+```
+
+##3 Hypothesis testing
+**Hypothesis 1: Orange juice and ascorbic acid delivers the same tooth growth across the data set.**
+```{r}
+
+hypo1 <- t.test(len~supp, data=t)
+hypo1$conf.int
+hypo1$p.value
+```
+*Because confidence interval includes 0 and p-value is greater than threshold .05, then we cannot reject hypothesis 1.*
+
+
+**Hypothesis 2: If the dosage is .5 mg/day, both supplements delivers the same tooth growth.**
+```{r}
+hypo2 <- t.test(len~supp, data=subset(t, dose==.5))
+hypo2$conf.int
+hypo2$p.value
+```
+*Because confidence interval does not include 0 and the p-value is below threshold .05, then we can reject hypothesis 2.*
+
+
+
+**Hypothesis 3: If the dosage is 1.0 mg/day, both supplements delivers the same tooth growth.**
+```{r}
+hypo3 <- t.test(len~supp, data=subset(t, dose==1.0))
+hypo3$conf.int
+hypo3$p.value
+```
+*Because confidence interval does not include 0 and the p-value is below threshold .05, then we can reject hypothesis 3.*
+
+
+
+**Hypothesis 4: If the dosage is 2.0 mg/day, both supplements delivers the same tooth growth.**
+```{r}
+hypo4 <- t.test(len~supp, data=subset(t, dose==2.0))
+hypo4$conf.int
+hypo4$p.value
+```
+*Because confidence interval includes 0 and the p-value is greater than threshold .05, then we cannot reject hypothesis 4.*
+
+
+## State your conclusions and the assumptions (needed for your conclusions).
+**Conclusions:**
+By using confidence intervals to compare Tooth Growth by supplement type -Orange Juice(OJ) vs Vitamin C(VC) and dose size, we can saw that higher the dose applied, longer the tooth grows over time. But, according to the data set, we cannot yet affirm that OJ is more effective with regards to Tooth Growth than VC.
+**Assumptions:**
+The tooth lengths follows a normal distribution and no other unmeasured factors are affecting it.
+The analysis were based on a ‘two.sided’ approach.
